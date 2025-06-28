@@ -1,4 +1,3 @@
-// ✅ Chat.js
 import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 
@@ -34,7 +33,6 @@ Just type one of the options to get started.`,
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
-    // Scroll again after image loads
     const images = document.querySelectorAll(".chat-bubble.bot img");
     images.forEach((img) => {
       img.onload = () => {
@@ -42,6 +40,20 @@ Just type one of the options to get started.`,
       };
     });
   }, [messages]);
+
+  // 🛠️ Fix input scroll on mobile keyboard open
+  useEffect(() => {
+    const input = document.querySelector('.chat-input input');
+    const scrollOnFocus = () => {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    };
+    input?.addEventListener("focus", scrollOnFocus);
+    return () => {
+      input?.removeEventListener("focus", scrollOnFocus);
+    };
+  }, []);
 
   const handleSend = () => {
     if (!input.trim()) return;
