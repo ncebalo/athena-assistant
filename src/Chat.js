@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import InternalUseBanner from './InternalUseBanner';
 import './Chat.css';
 
 function Chat() {
@@ -23,11 +24,13 @@ Just type one of the options to get started.`,
 
   // Practice/Department ID Instructions
   const practiceIdInstructions = `
-To find your <strong>Practice ID</strong> in Athena:<br /><br />
-1. <strong>Log in</strong> to Athena.<br />
-2. In the upper right-hand corner of the screen, locate your username and click on it.<br />
-3. A box will appear. In this box, you'll see the name of your practice, and a number in parenthesis to the right of it.<br />
-4. <strong>That number is your Practice ID.</strong><br /><br />
+To help your customer find their <strong>Practice ID</strong> in Athena, please guide them through these steps:<br /><br />
+1. Ask your customer to log in to Athena.<br />
+2. Instruct them to look at the upper right-hand corner of their Athena screen and locate their username.<br />
+3. Have them click on their username. A box will appear.<br />
+4. In this box, your customer will see the name of their practice, and a number in parenthesis to the right of it.<br />
+5. <strong>That number is their Practice ID.</strong><br /><br />
+You may reference the screenshot below (for your internal use only):<br /><br />
 <a href="/practice.png" target="_blank" rel="noopener">
   <img src="/practice.png" alt="Practice ID screenshot" style="max-width:100%; border-radius:12px; box-shadow:0px 2px 6px rgba(0,0,0,0.15);" />
 </a>
@@ -334,32 +337,35 @@ Were you able to complete this step? (Type Yes or No.)
   };
 
   return (
-    <div className="chat-window">
-      <div className="chat-messages">
-        {messages.map((msg, i) =>
-          msg.isHTML ? (
-            <div
-              key={i}
-              className={`chat-bubble ${msg.sender}`}
-              dangerouslySetInnerHTML={{ __html: msg.text }}
-            />
-          ) : (
-            <div key={i} className={`chat-bubble ${msg.sender}`}>
-              {msg.text}
-            </div>
-          )
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-      <div className="chat-input">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder="Type a message..."
-        />
-        <button onClick={handleSend}>Send</button>
+    <div className="chat-outer-container">
+      <InternalUseBanner />
+      <div className="chat-window">
+        <div className="chat-messages">
+          {messages.map((msg, i) =>
+            msg.isHTML ? (
+              <div
+                key={i}
+                className={`chat-bubble ${msg.sender}`}
+                dangerouslySetInnerHTML={{ __html: msg.text }}
+              />
+            ) : (
+              <div key={i} className={`chat-bubble ${msg.sender}`}>
+                {msg.text}
+              </div>
+            )
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+        <div className="chat-input">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Type a message..."
+          />
+          <button onClick={handleSend}>Send</button>
+        </div>
       </div>
     </div>
   );
