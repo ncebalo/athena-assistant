@@ -10,23 +10,28 @@ html, body {
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* Use dynamic viewport units for best compatibility */
+  height: 100dvh;
   max-height: 100dvh;
-  width: 100%;
-  max-width: 600px;
+  background: #f3f3f6;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  max-width: 480px;
   margin: 0 auto;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  overflow: hidden;
+  box-shadow: 0 0 24px 0 rgba(0,0,0,0.07);
 }
-
+@supports not (height: 100dvh) {
+  .chat-window {
+    height: 100vh;
+    max-height: 100vh;
+  }
+}
 .chat-messages {
-  flex: 1;
-  padding: 10px;
+  flex: 1 1 auto;
   overflow-y: auto;
-  background-color: #f9f9f9;
-  scroll-behavior: smooth;
+  padding: 16px 8px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  scroll-padding-bottom: 120px;
 }
 
 .chat-input {
