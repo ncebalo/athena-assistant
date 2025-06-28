@@ -1,3 +1,4 @@
+// ✅ Chat.js
 import React, { useState, useEffect, useRef } from 'react';
 import './Chat.css';
 
@@ -21,38 +22,25 @@ Just type one of the options to get started.`,
   const messagesEndRef = useRef(null);
 
   const orderSetSteps = [
-    `Let's get started with creating an order set.<br /><br />
-At the top of the screen, you'll see a <strong>purple menu bar</strong>. On the far right side of this bar, there is a <strong>gear icon ⚙️</strong>.<br /><br />
-Please click on the gear icon to open the configuration menu, then select <strong>Order Sets</strong>.<br /><br />
-When you see the <strong>Manage My Order Sets</strong> screen, type <em>OK</em> or <em>Yes</em> to continue.`,
-
-    `In the middle of the page, you'll see a section titled <strong>My Order Sets</strong>.<br /><br />
-Right below it is a hyperlink labeled <strong>"Add New"</strong>. Please click on it.<br /><br />
-<img src="/Addnew.png" alt="Add New button screenshot" style="max-width:100%; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-top: 10px;" />`,
-
-    `This will take you to the page where you can add the order set.<br /><br />
-Locate the section labeled <strong>Add Order Set</strong>.<br /><br />
-Right below it, you'll see a field labeled <strong>Order Set Name</strong>.<br />
-Click into the field next to it and type <strong>Shield</strong> — this is what we will name the order set.<br /><br />
-<img src="/nameorderset.png" alt="Order Set Name screenshot" style="max-width:100%; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-top: 10px;" />`,
-
-    `Have you named your order set?<br /><br />When you're ready, type <em>Yes</em> or <em>OK</em> to continue.`,
-
-    `Great! Let’s add the diagnosis codes.<br /><br />
-Scroll further down the page to the section labeled <strong>Diagnosis and Orders Detail</strong>.<br /><br />
-You’ll see a <strong>light blue bar</strong> and just below that, a <strong>purple bar</strong> with several tabs or square boxes for different order types.<br /><br />
-Look for the tab labeled <strong>Lab</strong> and click on it.<br /><br />
-<img src="/ordersdiagnosis.png" alt="Diagnosis and Orders Detail screenshot" style="max-width:100%; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-top: 10px;" />`,
-
-    `This is where you’ll set the <strong>receiving facility</strong>.<br /><br />
-You’ll see a <strong>search box</strong>, and to the right of it, a hyperlink that says <strong>Select Facility</strong>.<br /><br />
-Click on that hyperlink.<br /><br />
-This will bring up a window with the heading <strong>Add a Receiver</strong>.<br /><br />
-Do you see this window?`,
+    `At the top of the screen, you'll see a purple menu bar. On the far right side of this menu bar, there's a gear icon ⚙️. Please click on the gear icon to open the configuration menu and click on Order Sets.`,
+    `When you see the Manage My Order Sets screen, type OK or Yes to proceed to the next step.`,
+    `In the middle of the page, you'll see a section titled <strong>My Order Sets</strong>. Right below it is a hyperlink labeled <strong>"Add New"</strong>. Please click on it.<br /><br /><img src="/AddNew.png" alt="Add New" style="max-width:100%; border-radius: 12px; box-shadow: 0px 2px 6px rgba(0,0,0,0.15);" />`,
+    `This will take you to the page where you can add the order set.<br /><br />Locate the section labeled <strong>Add Order Set</strong>.<br /><br />Right below it, you'll see a field labeled <strong>Order Set Name</strong>. Click into the field next to it and type <strong>Shield</strong> — this is what we will name the order set.<br /><br /><img src="/nameorderset.png" alt="Order Set Name" style="max-width:100%; border-radius: 12px; box-shadow: 0px 2px 6px rgba(0,0,0,0.15);" />`,
+    `Have you named your order set?`,
+    `Great! Let's add the diagnosis codes.<br /><br />Scroll further down the page to the section labeled <strong>Diagnosis and Orders Detail</strong>.<br /><br />You’ll see a light blue bar and just below that, a purple bar with several tabs or square boxes for different order types.<br /><br />Look for the tab labeled <strong>Lab</strong> and click on it.<br /><br /><img src="/ordersdiagnosis.png" alt="Diagnosis Tab" style="max-width:100%; border-radius: 12px; box-shadow: 0px 2px 6px rgba(0,0,0,0.15);" />`,
+    `This is where you set the receiving facility.<br /><br />You will see a search box and to the right of it you will see a hyperlink that says <strong>Select Facility</strong>. Click on that hyperlink.<br /><br />This will bring up a window with a heading <strong>Add a Receiver</strong>. Do you see this?`
   ];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    // Scroll again after image loads
+    const images = document.querySelectorAll(".chat-bubble.bot img");
+    images.forEach((img) => {
+      img.onload = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      };
+    });
   }, [messages]);
 
   const handleSend = () => {
@@ -67,82 +55,31 @@ Do you see this window?`,
       if (lowerInput.includes("order set")) {
         setContext("orderSet");
         setStep(1);
-        botReply = { sender: "bot", text: orderSetSteps[0], isHTML: true };
-      } else if (lowerInput.includes("practice")) {
-        setContext("practiceId");
-        botReply = {
-          sender: "bot",
-          text: `To find the practice ID, click the username in the top-right corner. A box will appear labeled “Practice” with the name and ID.`,
-        };
-      } else if (lowerInput.includes("department")) {
-        setContext("departmentId");
-        botReply = {
-          sender: "bot",
-          text: `In Athena, look for a box at the bottom-right with the department name. Click the caret to view all departments.`,
-        };
-      } else if (lowerInput.includes("submit")) {
-        setContext("submitOrder");
-        botReply = {
-          sender: "bot",
-          text: "To submit an order: open the patient chart > click ‘Encounter’ > choose ‘Order Set’ > select 'Shield' > complete AOE and sign.",
-        };
-      } else if (lowerInput.includes("troubleshoot")) {
-        setContext("troubleshooting");
-        botReply = {
-          sender: "bot",
-          text: "What issue are you experiencing? I can help with login, missing orders, or visibility.",
-        };
+        botReply = { sender: "bot", text: orderSetSteps[0] };
       } else {
         botReply = {
           sender: "bot",
-          text: "Please type one of the following: order set, submit an order, troubleshooting, practice ID, or department ID.",
+          text: "I'm sorry, I didn’t catch that. Please type one of the following: order set, submit an order, troubleshooting, practice ID, or department ID.",
         };
       }
     } else if (context === "orderSet") {
-      if (step >= 1 && step <= 5) {
-        if (["yes", "ok"].some(word => lowerInput.includes(word))) {
-          const nextStep = step + 1;
+      if (lowerInput.includes("yes") || lowerInput.includes("ok")) {
+        const nextStep = step + 1;
+        if (nextStep < orderSetSteps.length) {
           setStep(nextStep);
-          botReply = {
-            sender: "bot",
-            text: orderSetSteps[step],
-            isHTML: true,
-          };
-        } else if (lowerInput.includes("no") && step === 4) {
-          botReply = {
-            sender: "bot",
-            text: `<strong>No problem!</strong><br />Here's what the screen should look like:<br /><br />
-            <img src="/No Diagnosis.png" alt="No Diagnosis screen" style="max-width:100%; border-radius: 12px; box-shadow: 0px 2px 6px rgba(0,0,0,0.15);" />`,
-            isHTML: true,
-          };
+          botReply = { sender: "bot", text: orderSetSteps[nextStep], isHTML: true };
         } else {
           botReply = {
             sender: "bot",
-            text: "Please respond with OK or Yes to continue.",
+            text: `That's all for the order set setup! Let me know if you want to restart or need help with another topic.`
           };
         }
-      } else if (step === 6 && ["yes", "ok"].some(word => lowerInput.includes(word))) {
-        setContext(null);
-        setStep(0);
-        botReply = {
-          sender: "bot",
-          text: "Perfect — you're almost there! Let me know if you'd like help selecting the Shield facility or saving the order set.",
-        };
       } else {
         botReply = {
           sender: "bot",
-          text: "Thanks! You can ask about submitting an order, practice ID, department ID, or troubleshooting.",
+          text: `Let me know when you're ready to continue.`
         };
-        setContext(null);
-        setStep(0);
       }
-    } else {
-      setContext(null);
-      setStep(0);
-      botReply = {
-        sender: "bot",
-        text: `Is there anything else I can help with? Try: order set, submit an order, troubleshooting, practice ID, or department ID.`,
-      };
     }
 
     newMessages.push(botReply);
@@ -189,3 +126,4 @@ Do you see this window?`,
 }
 
 export default Chat;
+
