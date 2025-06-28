@@ -1,10 +1,18 @@
-/* Chat.css */
+/* Reset and base layout */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  max-height: 100dvh;
+  overflow: hidden;
+}
 
+/* Chat window layout */
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
@@ -14,6 +22,7 @@
   overflow: hidden;
 }
 
+/* Scrollable message area */
 .chat-messages {
   flex: 1;
   padding: 10px;
@@ -22,13 +31,17 @@
   scroll-behavior: smooth;
 }
 
+/* Input area */
 .chat-input {
   display: flex;
   padding: 10px;
   border-top: 1px solid #ccc;
   background-color: #fff;
+  position: relative;
+  z-index: 2;
 }
 
+/* Input field */
 .chat-input input {
   flex: 1;
   padding: 10px;
@@ -37,6 +50,7 @@
   border-radius: 8px;
 }
 
+/* Send button */
 .chat-input button {
   margin-left: 10px;
   padding: 10px 16px;
@@ -52,7 +66,7 @@
   background-color: #0056b3;
 }
 
-/* Bubbles */
+/* Chat bubbles */
 .chat-bubble {
   max-width: 85%;
   padding: 10px 14px;
@@ -72,11 +86,12 @@
   background-color: #eeeeee;
 }
 
-/* Mobile Adjustments */
+/* Mobile adjustments */
 @media (max-width: 480px) {
   .chat-window {
     border: none;
     height: 100dvh;
+    max-height: 100dvh;
   }
 
   .chat-bubble {
