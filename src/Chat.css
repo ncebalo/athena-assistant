@@ -1,17 +1,16 @@
-/* Reset and base layout */
+/* Chat.css */
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  max-height: 100dvh;
   overflow: hidden;
 }
 
-/* Chat window layout */
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: 100vh;
   max-height: 100dvh;
   width: 100%;
   max-width: 600px;
@@ -22,7 +21,6 @@ html, body {
   overflow: hidden;
 }
 
-/* Scrollable message area */
 .chat-messages {
   flex: 1;
   padding: 10px;
@@ -31,17 +29,13 @@ html, body {
   scroll-behavior: smooth;
 }
 
-/* Input area */
 .chat-input {
   display: flex;
   padding: 10px;
   border-top: 1px solid #ccc;
   background-color: #fff;
-  position: relative;
-  z-index: 2;
 }
 
-/* Input field */
 .chat-input input {
   flex: 1;
   padding: 10px;
@@ -50,7 +44,6 @@ html, body {
   border-radius: 8px;
 }
 
-/* Send button */
 .chat-input button {
   margin-left: 10px;
   padding: 10px 16px;
@@ -66,7 +59,7 @@ html, body {
   background-color: #0056b3;
 }
 
-/* Chat bubbles */
+/* Bubbles */
 .chat-bubble {
   max-width: 85%;
   padding: 10px 14px;
@@ -86,22 +79,27 @@ html, body {
   background-color: #eeeeee;
 }
 
-/* Mobile adjustments */
+/* Mobile-specific adjustments */
 @media (max-width: 480px) {
-  .chat-window {
-    border: none;
+  html, body {
     height: 100dvh;
-    max-height: 100dvh;
+    overflow: hidden;
   }
 
-  .chat-bubble {
-    font-size: 14px;
-    padding: 8px 12px;
+  .chat-window {
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
   }
 
   .chat-input input,
   .chat-input button {
     font-size: 14px;
     padding: 8px;
+  }
+
+  .chat-bubble {
+    font-size: 14px;
+    padding: 8px 12px;
   }
 }
