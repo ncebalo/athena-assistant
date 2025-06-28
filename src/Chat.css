@@ -5,10 +5,11 @@ html, body {
   font-family: system-ui, sans-serif;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
+  background-color: #f8f9fb;
 }
 
 .chat-window {
-  height: 100dvh; /* dynamic vh handles mobile keyboard */
+  height: 100dvh; /* Fixes mobile keyboard resizing issues */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -76,7 +77,16 @@ html, body {
   align-self: flex-end;
 }
 
-/* For smaller screens */
+/* 🖼️ Image styling inside chat bubbles */
+.chat-bubble img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+  margin-top: 10px;
+}
+
+/* 📱 Mobile adjustments */
 @media screen and (max-width: 600px) {
   .chat-bubble {
     font-size: 15px;
