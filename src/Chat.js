@@ -104,6 +104,17 @@ Again, make sure you select the location with the Athena leaf icon to the left o
 Were you able to complete this step? (Type Yes or No.)
 `;
 
+  // Main menu keywords to always listen for
+  const mainMenuKeywords = [
+    "order set",
+    "submit an order",
+    "troubleshooting",
+    "practice id",
+    "department id",
+    "home",
+    "restart"
+  ];
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -134,6 +145,60 @@ Were you able to complete this step? (Type Yes or No.)
     const newMessages = [...messages, userMessage];
     const lowerInput = input.toLowerCase().trim();
     let botReply = null;
+
+    // --- GLOBAL KEYWORD JUMP ---
+    const matchedMainMenu = mainMenuKeywords.find(keyword =>
+      lowerInput.includes(keyword)
+    );
+    if (matchedMainMenu) {
+      setContext(null);
+      setStep(0);
+      setAwaitingLabSelection(false);
+
+      if (matchedMainMenu === "order set") {
+        setContext("orderSet");
+        setStep(1);
+        botReply = { sender: "bot", text: orderSetSteps[0], isHTML: true };
+      } else if (matchedMainMenu === "submit an order") {
+        botReply = {
+          sender: "bot",
+          text: "Submitting an order is not yet implemented. Please specify what you'd like to do next."
+        };
+      } else if (matchedMainMenu === "troubleshooting") {
+        botReply = {
+          sender: "bot",
+          text: "Troubleshooting steps are not yet implemented. Please specify what you'd like to do next."
+        };
+      } else if (
+        matchedMainMenu === "practice id" ||
+        matchedMainMenu === "practiceid"
+      ) {
+        setContext("practiceIdFlow");
+        botReply = { sender: "bot", text: practiceIdInstructions, isHTML: true };
+      } else if (
+        matchedMainMenu === "department id" ||
+        matchedMainMenu === "departmentid"
+      ) {
+        setContext("departmentIdFlow");
+        botReply = { sender: "bot", text: departmentIdInstructions, isHTML: true };
+      } else if (matchedMainMenu === "home" || matchedMainMenu === "restart") {
+        botReply = {
+          sender: "bot",
+          text: `<strong>Welcome to the Shield Assistant for Athena!</strong><br /><br />
+I can help you with the following:<br /><br />
+• Setting up an order set<br />
+• Submitting an order<br />
+• Troubleshooting<br />
+• Finding the practice or department ID<br /><br />
+Just type one of the options to get started.`,
+          isHTML: true,
+        };
+      }
+
+      setMessages([...newMessages, botReply]);
+      setInput("");
+      return;
+    }
 
     // Practice/Department ID flows
     if (context === "practiceIdFlow") {
@@ -265,7 +330,7 @@ Were you able to complete this step? (Type Yes or No.)
       if (lowerInput.includes("order set")) {
         setContext("orderSet");
         setStep(1);
-        botReply = { sender: "bot", text: orderSetSteps[0] };
+        botReply = { sender: "bot", text: orderSetSteps[0], isHTML: true };
       } else {
         botReply = {
           sender: "bot",
