@@ -213,11 +213,14 @@ Were you able to complete this step? (Type Yes or No.)
         setAwaitingLabSelection(false);
         setContext(null);
       } else if (lowerInput.includes("no")) {
+        // Show legacy instructions & switch to legacy context
         botReply = {
           sender: "bot",
-          text: labSelectionStep,
+          text: addReceiverLegacy,
           isHTML: true
         };
+        setAwaitingLabSelection(false);
+        setContext("orderSetAddReceiverLegacy");
       } else {
         botReply = {
           sender: "bot",
