@@ -8,13 +8,13 @@ function Chat() {
       sender: "bot",
       text: `<strong>Welcome to the Shield Assistant for Athena!</strong><br /><br />
 I can help you with the following:<br /><br />
-• Setting up an order set<br />
-• Submitting an order<br />
-• Troubleshooting<br />
-• Finding the practice or department ID<br />
-• Athena Tipsheet<br />
-• <span role="img" aria-label="support">Contact Athena Support</span><br /><br />
-Just type one of the options to get started.`,
+<span style="display:inline-block;width:1.5em;">1.</span> <span role="img" aria-label="order">📝</span> Setting up an order set<br />
+<span style="display:inline-block;width:1.5em;">2.</span> <span role="img" aria-label="submit">📤</span> Submitting an order<br />
+<span style="display:inline-block;width:1.5em;">3.</span> <span role="img" aria-label="troubleshooting">🛠️</span> Troubleshooting<br />
+<span style="display:inline-block;width:1.5em;">4.</span> <span role="img" aria-label="practice id">🏥</span> Finding the practice or department ID<br />
+<span style="display:inline-block;width:1.5em;">5.</span> <span role="img" aria-label="tipsheet">📄</span> Athena Tipsheet<br />
+<span style="display:inline-block;width:1.5em;">6.</span> <span role="img" aria-label="support">🆘</span> Contact Athena Support<br /><br />
+Just type the number of the option to get started.`,
       isHTML: true,
     },
   ]);
@@ -29,6 +29,7 @@ Just type one of the options to get started.`,
   const [awaitingSpecimenOk, setAwaitingSpecimenOk] = useState(false);
   const [awaitingTipsheetChoice, setAwaitingTipsheetChoice] = useState(false);
   const [awaitingAthenaSupportChoice, setAwaitingAthenaSupportChoice] = useState(false);
+  const [awaitingDepartmentMultiLocation, setAwaitingDepartmentMultiLocation] = useState(false);
   const messagesEndRef = useRef(null);
 
   const practiceIdInstructions = `
@@ -54,6 +55,20 @@ To find your <strong>Department ID</strong> in Athena:<br /><br />
 2. Select <strong>Departments</strong> from the configuration menu.<br />
 3. You will see a list of departments, each with its Department ID in the left column.<br /><br />
 Would you like a screenshot example? (Type Yes or No)
+`;
+
+  const departmentMultiLocationInstructions = `
+Great, I will help give you instructions on how your customer can find their department.<br/><br/>
+Have your customer log in to Athena and look at the <strong>bottom right hand corner</strong> of the screen. You will see a little box with a value in it — this is their <strong>department name</strong>.<br/><br/>
+<a href="/dept.png" target="_blank" rel="noopener">
+  <img src="/dept.png" alt="Department Name Screenshot" style="max-width:100%; border-radius: 12px; box-shadow: 0px 2px 6px rgba(0,0,0,0.15);" />
+</a>
+<br />
+<span style="display:block;margin-top:4px;font-size:0.95em;color:#555">
+  <a href="/dept.png" target="_blank" rel="noopener">Department Name screenshot</a>
+</span>
+<br /><br />
+<span role="img" aria-label="important" style="font-size:1.2em;">❗</span> <strong>Important:</strong> If your customer has more than one location, you will need to provide the <strong>name of the Athena Department for each location and GHSA #</strong> when submitting your Athena Integration Request.
 `;
 
   const departmentIdScreenshot = `
@@ -135,7 +150,17 @@ Were you able to complete this step? (Type Yes or No.)
 `
   ];
 
-  // Updated main menu keywords to include support triggers
+  // For handling numbers as quick menu
+  const mainMenuNumbers = [
+    "1", // Setting up an order set
+    "2", // Submitting an order
+    "3", // Troubleshooting
+    "4", // Finding the practice or department ID
+    "5", // Athena Tipsheet
+    "6"  // Contact Athena Support
+  ];
+
+  // Main menu keywords (legacy, for text triggers)
   const mainMenuKeywords = [
     "order set",
     "submit an order",
@@ -151,18 +176,6 @@ Were you able to complete this step? (Type Yes or No.)
     "support"
   ];
 
-  // Updated main menu text to remove 🛟 and keep other icons
-  const mainMenuText = `<strong>Welcome to the Shield Assistant for Athena!</strong><br /><br />
-I can help you with the following:<br /><br />
-<span role="img" aria-label="order">📝</span> Setting up an order set<br />
-<span role="img" aria-label="submit">📤</span> Submitting an order<br />
-<span role="img" aria-label="troubleshooting">🛠️</span> Troubleshooting<br />
-<span role="img" aria-label="practice id">🏥</span> Finding the practice or department ID<br />
-<span role="img" aria-label="tipsheet">📄</span> Athena Tipsheet<br />
-Contact Athena Support<br /><br />
-Just type one of the options to get started.`;
-
-  // Consistently scroll to bottom after every message update (fixes scroll bug)
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -187,6 +200,68 @@ Once this is selected, reply with <strong>ok</strong> to continue.
     const newMessages = [...messages, userMessage];
     const lowerInput = input.toLowerCase().trim();
     let botReply = null;
+
+    // Numeric quick menu handling
+    if (mainMenuNumbers.includes(lowerInput)) {
+      setContext(null);
+      setStep(0);
+      setSubStep(null);
+      setPhlebBranch(null);
+      setPhlebAccessBranch(null);
+      setAwaitingLegacyView(false);
+      setAwaitingFinalStep(false);
+      setAwaitingSpecimenOk(false);
+
+      if (lowerInput === "1") {
+        setContext("orderSet");
+        setStep(1);
+        botReply = { sender: "bot", text: orderSetSteps[0], isHTML: true };
+      } else if (lowerInput === "2") {
+        botReply = {
+          sender: "bot",
+          text: "Submitting an order is not yet implemented. Please specify what you'd like to do next."
+        };
+      } else if (lowerInput === "3") {
+        botReply = {
+          sender: "bot",
+          text: "Troubleshooting steps are not yet implemented. Please specify what you'd like to do next."
+        };
+      } else if (lowerInput === "4") {
+        botReply = {
+          sender: "bot",
+          text: 'Do you need help finding the Practice ID or Department ID? Please specify "Practice ID" or "Department ID".'
+        };
+        setContext("idClarify");
+      } else if (lowerInput === "5") {
+        botReply = {
+          sender: "bot",
+          isHTML: true,
+          text: `
+<strong>Please select a tip sheet:</strong><br /><br />
+<ol style="padding-left: 18px; margin: 0;">
+  <li><strong>Order Set Tip Sheet</strong></li>
+  <li><strong>Ordering Tip Sheet</strong></li>
+</ol>
+<br />
+<em>Reply with <strong>1</strong> or <strong>2</strong> to select.</em>
+`
+        };
+        setAwaitingTipsheetChoice(true);
+      } else if (lowerInput === "6") {
+        botReply = {
+          sender: "bot",
+          isHTML: true,
+          text: `<strong>How would you like to contact Athena Support?</strong><br />
+<span style="margin-left:0.5em;display:inline-block;width:1.5em;">1</span> <span role="img" aria-label="phone">📞</span> Phone Number<br/>
+<span style="margin-left:0.5em;display:inline-block;width:1.5em;">2</span> <span role="img" aria-label="ticket">🎫</span> CSC Ticket<br/>
+<br/><em>Reply with <strong>1</strong> or <strong>2</strong> to select.</em>`
+        };
+        setAwaitingAthenaSupportChoice(true);
+      }
+      setMessages([...newMessages, botReply]);
+      setInput("");
+      return;
+    }
 
     // Athena Support branching logic
     if (awaitingAthenaSupportChoice) {
@@ -219,7 +294,7 @@ Once this is selected, reply with <strong>ok</strong> to continue.
       return;
     }
 
-    // Main menu quick jump and Athena Support trigger
+    // Main menu quick jump and Athena Support trigger (legacy keyword triggers)
     const matchedMainMenu = mainMenuKeywords.find(keyword =>
       lowerInput.includes(keyword)
     );
@@ -272,7 +347,11 @@ Once this is selected, reply with <strong>ok</strong> to continue.
         matchedMainMenu === "departmentid"
       ) {
         setContext("departmentIdFlow");
-        botReply = { sender: "bot", text: departmentIdInstructions, isHTML: true };
+        setAwaitingDepartmentMultiLocation(true);
+        botReply = { sender: "bot", text: "Does your customer have more than one location? (Type Yes or No)" };
+        setMessages([...newMessages, botReply]);
+        setInput("");
+        return;
       } else if (
         matchedMainMenu === "athena tipsheet" ||
         matchedMainMenu === "tipsheet"
@@ -294,11 +373,37 @@ Once this is selected, reply with <strong>ok</strong> to continue.
       } else if (matchedMainMenu === "home" || matchedMainMenu === "restart") {
         botReply = {
           sender: "bot",
-          text: mainMenuText,
+          text: `<strong>Welcome to the Shield Assistant for Athena!</strong><br /><br />
+I can help you with the following:<br /><br />
+<span style="display:inline-block;width:1.5em;">1.</span> <span role="img" aria-label="order">📝</span> Setting up an order set<br />
+<span style="display:inline-block;width:1.5em;">2.</span> <span role="img" aria-label="submit">📤</span> Submitting an order<br />
+<span style="display:inline-block;width:1.5em;">3.</span> <span role="img" aria-label="troubleshooting">🛠️</span> Troubleshooting<br />
+<span style="display:inline-block;width:1.5em;">4.</span> <span role="img" aria-label="practice id">🏥</span> Finding the practice or department ID<br />
+<span style="display:inline-block;width:1.5em;">5.</span> <span role="img" aria-label="tipsheet">📄</span> Athena Tipsheet<br />
+<span style="display:inline-block;width:1.5em;">6.</span> <span role="img" aria-label="support">🆘</span> Contact Athena Support<br /><br />
+Just type the number of the option to get started.`,
           isHTML: true,
         };
       }
 
+      setMessages([...newMessages, botReply]);
+      setInput("");
+      return;
+    }
+
+    // Branching for department multi-location
+    if (awaitingDepartmentMultiLocation) {
+      if (lowerInput === "yes") {
+        botReply = { sender: "bot", text: departmentMultiLocationInstructions, isHTML: true };
+        setAwaitingDepartmentMultiLocation(false);
+        setContext(null);
+      } else if (lowerInput === "no") {
+        botReply = { sender: "bot", text: departmentIdInstructions, isHTML: true };
+        setAwaitingDepartmentMultiLocation(false);
+        setContext("departmentIdFlow");
+      } else {
+        botReply = { sender: "bot", text: "Please reply Yes or No: Does your customer have more than one location?" };
+      }
       setMessages([...newMessages, botReply]);
       setInput("");
       return;
@@ -331,8 +436,12 @@ Once this is selected, reply with <strong>ok</strong> to continue.
         botReply = { sender: "bot", text: practiceIdInstructions, isHTML: true };
         setContext("practiceIdFlow");
       } else if (lowerInput.includes("department")) {
-        botReply = { sender: "bot", text: departmentIdInstructions, isHTML: true };
         setContext("departmentIdFlow");
+        setAwaitingDepartmentMultiLocation(true);
+        botReply = { sender: "bot", text: "Does your customer have more than one location? (Type Yes or No)" };
+        setMessages([...newMessages, botReply]);
+        setInput("");
+        return;
       } else {
         botReply = { sender: "bot", text: "Please specify if you are looking for the Practice ID or Department ID." };
       }
@@ -357,8 +466,9 @@ Once this is selected, reply with <strong>ok</strong> to continue.
       || lowerInput.includes("departmentid")
       || (lowerInput.includes("department") && lowerInput.includes("id"))
     ) {
-      botReply = { sender: "bot", text: departmentIdInstructions, isHTML: true };
       setContext("departmentIdFlow");
+      setAwaitingDepartmentMultiLocation(true);
+      botReply = { sender: "bot", text: "Does your customer have more than one location? (Type Yes or No)" };
       setMessages([...newMessages, botReply]);
       setInput("");
       return;
@@ -371,6 +481,8 @@ Once this is selected, reply with <strong>ok</strong> to continue.
       setInput("");
       return;
     }
+
+    // ...rest of original handleSend logic, unchanged...
 
     // Legacy View fallback after receiver selection step
     if (context === "orderSet" && awaitingLegacyView) {
@@ -608,7 +720,7 @@ Once this is selected, reply with <strong>ok</strong> to continue.
 
     botReply = {
       sender: "bot",
-      text: "I'm sorry, I didn’t catch that. Please type one of the following: order set, submit an order, troubleshooting, practice ID, department ID, Athena Tipsheet, or Contact Athena Support.",
+      text: "I'm sorry, I didn’t catch that. Please type one of the following or the corresponding number: 1 (order set), 2 (submit an order), 3 (troubleshooting), 4 (practice ID/department ID), 5 (Athena Tipsheet), or 6 (Contact Athena Support).",
     };
     setMessages([...newMessages, botReply]);
     setInput("");
