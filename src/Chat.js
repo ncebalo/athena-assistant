@@ -201,6 +201,44 @@ Once this is selected, reply with <strong>ok</strong> to continue.
     const lowerInput = input.toLowerCase().trim();
     let botReply = null;
 
+    // --- TIP SHEET CHOICE BLOCK (put this first!) ---
+    if (awaitingTipsheetChoice) {
+      if (lowerInput === "1") {
+        botReply = {
+          sender: "bot",
+          isHTML: true,
+          text: `<strong>Athena Order Set Tip Sheet</strong><br />
+<a href="/Athena-Order-Set.pdf" target="_blank" rel="noopener">Download Order Set Tip Sheet (PDF)</a>`
+        };
+        setAwaitingTipsheetChoice(false);
+      } else if (lowerInput === "2") {
+        botReply = {
+          sender: "bot",
+          isHTML: true,
+          text: `<strong>Ordering Tip Sheet</strong><br />
+<a href="/Athena-Tip-Sheet-R2.pdf" target="_blank" rel="noopener">Download Ordering Tip Sheet (PDF)</a>`
+        };
+        setAwaitingTipsheetChoice(false);
+      } else {
+        botReply = {
+          sender: "bot",
+          isHTML: true,
+          text: `
+<strong>Please select a tip sheet:</strong><br /><br />
+<ol style="padding-left: 18px; margin: 0;">
+  <li><strong>Order Set Tip Sheet</strong></li>
+  <li><strong>Ordering Tip Sheet</strong></li>
+</ol>
+<br />
+<em>Reply with <strong>1</strong> or <strong>2</strong> to select.</em>
+        `
+        };
+      }
+      setMessages([...newMessages, botReply]);
+      setInput("");
+      return;
+    }
+
     // Numeric quick menu handling
     if (mainMenuNumbers.includes(lowerInput)) {
       setContext(null);
@@ -481,8 +519,6 @@ Just type the number of the option to get started.`,
       setInput("");
       return;
     }
-
-    // ...rest of original handleSend logic, unchanged...
 
     // Legacy View fallback after receiver selection step
     if (context === "orderSet" && awaitingLegacyView) {
