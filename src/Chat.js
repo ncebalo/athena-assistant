@@ -238,7 +238,50 @@ Once this is selected, reply with <strong>ok</strong> to continue.
       setInput("");
       return;
     }
-    //test change 
+    // --- ATHENA SUPPORT CHOICE BLOCK ---
+if (awaitingAthenaSupportChoice) {
+  let supportReply = null;
+  if (lowerInput === "1") {
+    supportReply = {
+      sender: "bot",
+      isHTML: true,
+      text: `
+<span role="img" aria-label="phone">📞</span> <strong>Athena Support Phone Number:</strong><br />
+<a href="tel:1-800-396-6815">1-800-396-6815</a><br /><br />
+Would you like help with anything else?`
+    };
+  } else if (lowerInput === "2") {
+    supportReply = {
+      sender: "bot",
+      isHTML: true,
+      text: `
+<span role="img" aria-label="ticket">🎫</span> <strong>To create a CSC ticket:</strong><br />
+While logged into Athena, go to the top menu and click <strong>Support</strong> → <strong>Create Case or Call</strong><br /><br />
+<img src="/support.png" alt="Support Menu Screenshot" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 6px; margin: 10px 0;" /><br />
+Or visit:<br />
+<a href="https://success.athenahealth.com/s/article/000007124" target="_blank" rel="noopener">
+https://success.athenahealth.com/s/article/000007124</a><br /><br />
+Would you like help with anything else?`
+    };
+  } else {
+    supportReply = {
+      sender: "bot",
+      isHTML: true,
+      text: `<strong>Please reply with:</strong><br/>
+      <span style="margin-left:0.5em;display:inline-block;width:1.5em;">1</span> 📞 Phone Number<br/>
+      <span style="margin-left:0.5em;display:inline-block;width:1.5em;">2</span> 🎫 CSC Ticket`
+    };
+    setMessages([...newMessages, supportReply]);
+    setInput("");
+    return;
+  }
+
+  setAwaitingAthenaSupportChoice(false);
+  setMessages([...newMessages, supportReply]);
+  setInput("");
+  return;
+}
+
     // Numeric quick menu handling
     if (mainMenuNumbers.includes(lowerInput)) {
       setContext(null);
