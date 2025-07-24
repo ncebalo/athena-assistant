@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import InternalUseBanner from './InternalUseBanner';
 import './Chat.css';
 
+
 function Chat() {
   const [messages, setMessages] = useState([
     {
@@ -238,50 +239,7 @@ Once this is selected, reply with <strong>ok</strong> to continue.
       setInput("");
       return;
     }
-    // --- ATHENA SUPPORT CHOICE BLOCK ---
-if (awaitingAthenaSupportChoice) {
-  let supportReply = null;
-  if (lowerInput === "1") {
-    supportReply = {
-      sender: "bot",
-      isHTML: true,
-      text: `
-<span role="img" aria-label="phone">📞</span> <strong>Athena Support Phone Number:</strong><br />
-<a href="tel:1-800-396-6815">1-800-396-6815</a><br /><br />
-Would you like help with anything else?`
-    };
-  } else if (lowerInput === "2") {
-    supportReply = {
-      sender: "bot",
-      isHTML: true,
-      text: `
-<span role="img" aria-label="ticket">🎫</span> <strong>To create a CSC ticket:</strong><br />
-While logged into Athena, go to the top menu and click <strong>Support</strong> → <strong>Create Case or Call</strong><br /><br />
-<img src="/support.png" alt="Support Menu Screenshot" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 6px; margin: 10px 0;" /><br />
-Or visit:<br />
-<a href="https://success.athenahealth.com/s/article/000007124" target="_blank" rel="noopener">
-https://success.athenahealth.com/s/article/000007124</a><br /><br />
-Would you like help with anything else?`
-    };
-  } else {
-    supportReply = {
-      sender: "bot",
-      isHTML: true,
-      text: `<strong>Please reply with:</strong><br/>
-      <span style="margin-left:0.5em;display:inline-block;width:1.5em;">1</span> 📞 Phone Number<br/>
-      <span style="margin-left:0.5em;display:inline-block;width:1.5em;">2</span> 🎫 CSC Ticket`
-    };
-    setMessages([...newMessages, supportReply]);
-    setInput("");
-    return;
-  }
-
-  setAwaitingAthenaSupportChoice(false);
-  setMessages([...newMessages, supportReply]);
-  setInput("");
-  return;
-}
-
+    //Add Comment to trigger Vercel Deploy
     // Numeric quick menu handling
     if (mainMenuNumbers.includes(lowerInput)) {
       setContext(null);
@@ -816,19 +774,38 @@ Just type the number of the option to get started.`,
       <InternalUseBanner />
       <div className="chat-window">
         <div className="chat-messages">
-          {messages.map((msg, i) =>
-            msg.isHTML ? (
-              <div
-                key={i}
-                className={`chat-bubble ${msg.sender}`}
-                dangerouslySetInnerHTML={{ __html: msg.text }}
-              />
-            ) : (
-              <div key={i} className={`chat-bubble ${msg.sender}`}>
-                {msg.text}
-              </div>
-            )
-          )}
+          {messages.map((msg, i) => {
+  const isBot = msg.sender === 'bot';
+  const botAnimation = isBot
+    ? Math.random() > 0.5
+      ? 'animate-bounce'
+      : 'animate-wave'
+    : '';
+
+  return (
+    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '12px' }}>
+      {isBot && (
+        <img
+  src="/shieldassistant.png"
+  alt="Shield Assistant"
+  className="animate-bounce"
+  style={{ width: '60px', height: '60px', marginRight: '12px', borderRadius: '8px' }}
+/>
+      )}
+      {msg.isHTML ? (
+        <div
+          className={`chat-bubble ${msg.sender}`}
+          dangerouslySetInnerHTML={{ __html: msg.text }}
+        />
+      ) : (
+        <div className={`chat-bubble ${msg.sender}`}>
+          {msg.text}
+        </div>
+      )}
+    </div>
+  );
+})}
+
           {/* Always scrolls to this anchor */}
           <div ref={messagesEndRef} />
         </div>

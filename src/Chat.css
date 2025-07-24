@@ -150,3 +150,30 @@ html, body, #root {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  15% { transform: rotate(14deg); }
+  30% { transform: rotate(-8deg); }
+  45% { transform: rotate(14deg); }
+  60% { transform: rotate(-4deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-bounce {
+  animation: bounce 0.9s ease-in-out;
+}
+
+.animate-wave {
+  animation: wave 1.4s ease-in-out;
+  transform-origin: bottom center;
+}
